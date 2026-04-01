@@ -1,0 +1,53 @@
+@model IEnumerable<SmartInventoryHisab.Model.Purchase>
+
+@{
+    ViewData["Title"] = "Purchase History";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0 text-primary">Purchase History</h2>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> New Purchase
+        </a>
+    </div>
+
+    <div class="card shadow border-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="ps-4">Date & Time</th>
+                        <th>Product Name</th>
+                        <th class="text-center">Quantity Added</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any()) {
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox display-4 d-block mb-3"></i>
+                                No purchases recorded yet.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var item in Model) {
+                        <tr>
+                            <td class="ps-4">@item.PurchaseDate.ToLocalTime().ToString("g")</td>
+                            <td class="fw-bold">@item.Product?.Name</td>
+                            <td class="text-center">
+                                <span class="badge bg-success py-2 px-3">+ @item.Quantity</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Rollback Purchase">
+                                   Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

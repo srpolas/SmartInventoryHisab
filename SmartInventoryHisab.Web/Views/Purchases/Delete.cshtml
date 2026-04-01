@@ -1,0 +1,27 @@
+@model SmartInventoryHisab.Model.Purchase
+
+@{
+    ViewData["Title"] = "Rollback Purchase";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center border rounded shadow p-5 bg-white border-danger">
+            <h1 class="text-danger h3 mb-4">Rollback Purchase Record?</h1>
+            <p class="lead">Are you sure you want to delete this purchase record for <br><strong>@Model.Product?.Name</strong>?</p>
+            
+            <div class="alert alert-warning py-3 my-4">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> 
+                Deleting this record will <strong>subtract @Model.Quantity</strong> from current stock.
+            </div>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex justify-content-center gap-3">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-danger px-4">Confirm Deletion</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

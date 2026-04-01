@@ -1,0 +1,55 @@
+@model IEnumerable<SmartInventoryHisab.Model.StockTransaction>
+
+@{
+    ViewData["Title"] = "Stock Audit Log";
+}
+
+<div class="container mt-4">
+    <div class="mb-4 text-center">
+        <h2 class="h3 mb-1 text-dark fw-bold">Stock Transaction Log</h2>
+        <p class="text-muted">History of all inventory activities.</p>
+    </div>
+
+    <div class="card shadow-lg border-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="ps-4 py-3">Timestamp</th>
+                        <th class="py-3">Product Name</th>
+                        <th class="py-3">Type</th>
+                        <th class="text-center py-3">Qty Change</th>
+                        <th class="pe-4 py-3">Reference ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any()) {
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-clock-history display-4 d-block mb-3 opacity-25"></i>
+                                No stock transactions recorded yet.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var item in Model.OrderByDescending(x => x.TransactionDate)) {
+                        <tr>
+                            <td class="ps-4 text-muted small">@item.TransactionDate.ToLocalTime().ToString("MMM dd, yyyy HH:mm:ss")</td>
+                            <td class="fw-bold">@item.Product?.Name</td>
+                            <td>
+                                <span class="badge rounded-pill @(item.TransactionType == SmartInventoryHisab.Model.TransactionType.Purchase ? "bg-primary" : "bg-success") px-3 py-2">
+                                    @item.TransactionType
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <span class="fw-bold @(item.Quantity > 0 ? "text-success" : "text-danger") fs-5">
+                                    @(item.Quantity > 0 ? "+" : "")@item.Quantity
+                                </span>
+                            </td>
+                            <td class="pe-4 text-muted font-monospace small">@item.ReferenceId</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

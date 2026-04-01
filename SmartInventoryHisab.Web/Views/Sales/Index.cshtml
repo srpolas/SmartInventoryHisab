@@ -1,0 +1,51 @@
+@model IEnumerable<SmartInventoryHisab.Model.Sale>
+
+@{
+    ViewData["Title"] = "Sales Records";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0 text-success">Sales Transactions</h2>
+        <a asp-action="Create" class="btn btn-success shadow-sm">
+            <i class="bi bi-cart-dash-fill me-1"></i> Record New Sale
+        </a>
+    </div>
+
+    <div class="card shadow border-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Sale Date</th>
+                        <th>Product Name</th>
+                        <th class="text-center">Quantity Sold</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any()) {
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <i class="bi bi-bag-x display-4 d-block mb-3"></i>
+                                No sales transactions found.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var item in Model) {
+                        <tr>
+                            <td class="ps-4">@item.SaleDate.ToLocalTime().ToString("g")</td>
+                            <td class="fw-bold">@item.Product?.Name</td>
+                            <td class="text-center">
+                                <span class="badge bg-danger py-2 px-3">- @item.Quantity</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Rollback Sale</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

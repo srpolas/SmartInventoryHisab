@@ -1,0 +1,48 @@
+@model IEnumerable<SmartInventoryHisab.Model.Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h2">Products</h1>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </div>
+
+    <table class="table table-hover table-striped shadow-sm rounded overflow-hidden">
+        <thead class="table-dark">
+            <tr>
+                <th class="ps-4">Photo</th>
+                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.Price)</th>
+                <th>@Html.DisplayNameFor(model => model.CurrentStock)</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td class="ps-4">
+                        <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/products/placeholder.png" : item.ImageUrl)" 
+                             class="rounded-3 border shadow-sm" width="50" height="50" style="object-fit: cover;" alt="@item.Name" />
+                    </td>
+                    <td class="fw-bold">@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                    <td>
+                        <span class="badge @(item.CurrentStock > 10 ? "bg-success" : (item.CurrentStock > 0 ? "bg-warning" : "bg-danger"))">
+                            @Html.DisplayFor(modelItem => item.CurrentStock)
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info mx-1">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

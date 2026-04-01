@@ -1,0 +1,157 @@
+@model SmartInventoryHisab.Web.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Inventory Dashboard";
+}
+
+<div class="container-fluid py-4 bg-light">
+    <div class="row align-items-center mb-4 px-3">
+        <div class="col-auto">
+            <div class="bg-primary text-white rounded-3 p-3 shadow-lg">
+                <i class="bi bi-speedometer2 display-4"></i>
+            </div>
+        </div>
+        <div class="col">
+            <h1 class="h2 mb-1 fw-bold text-dark">Inventory Performance</h1>
+            <p class="text-muted mb-0">Overview of warehouse stock and sales activity.</p>
+        </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm transition-hover h-100 bg-white rounded-4 overflow-hidden border-start border-primary border-5">
+                <div class="card-body p-4 text-center">
+                    <div class="text-primary fs-1 mb-2">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold">@Model.TotalProducts</h3>
+                    <p class="text-muted text-uppercase small ls-wide fw-semibold">Total SKUs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm transition-hover h-100 bg-white rounded-4 overflow-hidden border-start border-danger border-5">
+                <div class="card-body p-4 text-center">
+                    <div class="text-danger fs-1 mb-2">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold">@Model.LowStockCount</h3>
+                    <p class="text-muted text-uppercase small ls-wide fw-semibold">Low Stock Items</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm transition-hover h-100 bg-white rounded-4 overflow-hidden border-start border-warning border-5">
+                <div class="card-body p-4 text-center">
+                    <div class="text-warning fs-1 mb-2">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold">@Model.OlderThan6MonthsCount</h3>
+                    <p class="text-muted text-uppercase small ls-wide fw-semibold">Aged (> 6 Months)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm transition-hover h-100 bg-white rounded-4 overflow-hidden border-start border-success border-5">
+                <div class="card-body p-4 text-center">
+                    <div class="text-success fs-1 mb-2" style="font-size: 3rem;">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold">@Model.RecentlySoldTotal</h3>
+                    <p class="text-muted text-uppercase small ls-wide fw-semibold">Units Sold (30d)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Data Lists -->
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-star-fill text-warning me-2"></i>Latest Additions</h5>
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-sm btn-outline-light">All Products</a>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light text-muted small text-uppercase">
+                            <tr>
+                                <th class="ps-4">Product</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th class="pe-4 text-end">Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.LatestProducts) {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/products/placeholder.png" : item.ImageUrl)" 
+                                                 class="rounded-circle me-3 border shadow-sm" width="40" height="40" alt="@item.Name" />
+                                            <div>
+                                                <div class="fw-bold text-dark">@item.Name</div>
+                                                <div class="text-muted small">@item.Description.Substring(0, Math.Min(item.Description.Length, 30))...</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="fw-semibold text-primary">$@item.Price</span></td>
+                                    <td>
+                                        <span class="badge rounded-pill @(item.CurrentStock < 5 ? "bg-danger" : (item.CurrentStock < 20 ? "bg-warning text-dark" : "bg-success"))">
+                                            @item.CurrentStock
+                                        </span>
+                                    </td>
+                                    <td class="pe-4 text-end text-muted">@item.CreatedAt.ToShortDateString()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden border-top border-5 border-success">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-receipt-cutoff me-2 text-success"></i>Recent Sales Activity</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var sale in Model.RecentSales) {
+                            <li class="list-group-item py-3 px-4 d-flex justify-content-between align-items-center border-0 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3">
+                                        <i class="bi bi-cart-check text-success"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">@sale.Product?.Name</div>
+                                        <div class="small text-muted">@sale.SaleDate.ToString("g")</div>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold text-danger">-@sale.Quantity</div>
+                                    <div class="small badge bg-light text-dark border">Ref: SAL-@sale.Id</div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card-footer bg-white border-0 py-3 text-center">
+                    <a asp-controller="Sales" asp-action="Index" class="btn btn-sm btn-link text-decoration-none">View Full History <i class="bi bi-chevron-right small"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transition-hover {
+        transition: transform 0.2s cubic-bezier(0.12, 0, 0.39, 0), box-shadow 0.2s ease;
+    }
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,0.125) !important;
+    }
+    .ls-wide { letter-spacing: 0.05em; }
+</style>

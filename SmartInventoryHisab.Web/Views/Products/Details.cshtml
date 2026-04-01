@@ -1,0 +1,40 @@
+@model SmartInventoryHisab.Model.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title mb-0">Product Details</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Description)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Description)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Price)</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Price)</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CurrentStock)</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge @(Model.CurrentStock > 10 ? "bg-success" : (Model.CurrentStock > 0 ? "bg-warning" : "bg-danger"))">
+                                @Html.DisplayFor(model => model.CurrentStock)
+                            </span>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
